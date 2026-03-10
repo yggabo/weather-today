@@ -27,6 +27,7 @@
           <span class="stat-label">PRECIPITATION</span>
           <span class="stat-valor">{{ clima.probabilidad }}%</span>
         </div>
+
         <div class="stat-item">
           <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#007bff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path></svg>
           <span class="stat-label">WIND</span>
@@ -85,8 +86,8 @@ async function obtenerClima(lat, lon) {
 
   return {
     temperatura: datos.hourly.temperature_2m[horaIndex],
-    precipitacion: datos.hourly.precipitation_probability[horaIndex],
-    probabilidad: datos.hourly.precipitation_probability[horaIndex], // para tu template
+    precipitacion: datos.hourly.precipitation_probability[horaIndex], //error
+    probabilidad: datos.hourly.precipitation_probability[horaIndex],
     viento: datos.hourly.windspeed_10m[horaIndex],
     humedad: datos.hourly.relative_humidity_2m[horaIndex],
     weathercode: datos.hourly.weathercode[horaIndex]

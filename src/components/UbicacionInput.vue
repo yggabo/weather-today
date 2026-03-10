@@ -53,7 +53,7 @@ async function autocompletar() {
   const texto = ciudadInput.value;
   if (texto.length < 2) return;
 
-  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${texto}&count=5`;
+  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${texto}&count=10&language=es`;
   const res = await fetch(url);
   const datos = await res.json();
 
@@ -71,19 +71,19 @@ const debouncedAutocompletar = debounce(autocompletar, 300);
 
 // Selección de ciudad
 function seleccionarLugar() {
-  const lugar = ultimaBusqueda.find(l => {
-    const admin = l.admin1 ? `, ${l.admin1}` : '';
-    return `${l.name}${admin}, ${l.country}` === ciudadInput.value;
-  });
+  const lugar = ultimaBusqueda.find(l =>
+    ciudadInput.value.toLowerCase().includes(l.name.toLowerCase())
+  );
 
   if (!lugar) {
     alert('Selecciona una ciudad de la lista');
     return;
   }
 
-  // Emitir el lugar seleccionado al componente padre
   emit('lugar-seleccionado', lugar);
 }
+
+
 </script>
 
 <style scoped>

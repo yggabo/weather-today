@@ -18,7 +18,11 @@
         <div class="icono-clima-pequeno">
           {{ obtenerIcono(dia.weathercode) }}
         </div>
-        <span class="dia-temp">{{ Math.round(dia.tempMax) }}°</span>
+        <div class="temp-container">
+  <span class="temp-max">{{ Math.round(dia.tempMax) }}°</span>
+  <span class="temp-min">{{ Math.round(dia.tempMin) }}°</span>
+</div>
+        <span class="dia-precipitacion">{{ dia.precipitacion.toFixed(1) }} mm</span>
       </div>
     </div>
   </div>
@@ -165,8 +169,20 @@ watch(
   justify-content: center;
 }
 
-.dia-temp {
+.temp-container{
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.temp-max{
   font-size: 1.1rem;
   font-weight: 800;
 }
+
+.temp-min{
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
 </style>
