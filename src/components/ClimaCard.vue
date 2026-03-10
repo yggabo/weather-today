@@ -65,18 +65,31 @@ function obtenerFechaFormateada() {
 const clima = ref(null);
 
 async function obtenerClima(lat, lon) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&current=temperature_2m,relative_humidity_2m,precipitation,precipitation_probability,windspeed_10m,weathercode&temperature_unit=celsius&windspeed_unit=kmh&precipitation_unit=mm`;
+  // URL de la API con datos horarios
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m,precipitation_probability,windspeed_10m,weathercode&temperature_unit=celsius&windspeed_unit=kmh&precipitation_unit=mm`;
 
   const res = await fetch(url);
   const datos = await res.json();
 
+  // Tomamos la hora actual en formato ISO: YYYY-MM-DDTHH:00
+  const ahora = new Date();
+  const ahoraISO = ahora.toISOString().slice(0, 13) + ":00";
+
+  // Buscamos el índice del tiempo actual en los datos horarios
+  const horaIndex = datos.hourly.time.findIndex(t => t === ahoraISO);
+
+  if (horaIndex === -1) {
+    console.warn("No se encontró la hora actual en los datos de Open-Meteo");
+    return null;
+  }
+
   return {
-    temperatura: datos.current_weather.temperature,
-    precipitacion: datos.current_weather.precipitation,
-    probabilidad: datos.current_weather.precipitation_probability,
-    viento: datos.current_weather.windspeed,
-    humedad: datos.current_weather.relative_humidity_2m, // si tu API devuelve humedad aquí
-    weathercode: datos.current_weather.weathercode // nuevo campo
+    temperatura: datos.hourly.temperature_2m[horaIndex],
+    precipitacion: datos.hourly.precipitation_probability[horaIndex],
+    probabilidad: datos.hourly.precipitation_probability[horaIndex], // para tu template
+    viento: datos.hourly.windspeed_10m[horaIndex],
+    humedad: datos.hourly.relative_humidity_2m[horaIndex],
+    weathercode: datos.hourly.weathercode[horaIndex]
   };
 }
 
