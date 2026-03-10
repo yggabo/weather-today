@@ -1,19 +1,26 @@
 <template>
-  <div>
-    <h2>Mini App del Clima</h2>
-
-    <!-- Componente de entrada de ubicación 
-    Emite el evento 'lugar-seleccionado' cuando el usuario elige un lugar
-    El evento se maneja con la función actualizarLugar -->
+  <main class="contenedor-principal">
+    <!-- Componente de búsqueda (Buscador superior) -->
     <UbicacionInput @lugar-seleccionado="actualizarLugar" />
 
-    <!-- Componente que muestra la información del clima actual-->
-    <ClimaCard v-if="lugarSeleccionado" :lugar="lugarSeleccionado" />
+    <div v-if="lugarSeleccionado" class="contenido-clima">
+      <!-- Componente que muestra la información del clima actual -->
+      <ClimaCard :lugar="lugarSeleccionado" />
 
-    <!-- Componente que muestra el pronóstico semanal-->
-    <PronosticoSemanal v-if="lugarSeleccionado" :lugar="lugarSeleccionado" />
-  </div>
-  <a href="https://open-meteo.com/" target="blank">Datos de open-meteo</a>
+      <!-- Componente que muestra el pronóstico semanal -->
+      <PronosticoSemanal :lugar="lugarSeleccionado" />
+    </div>
+
+    <!-- Mensaje inicial si no hay lugar seleccionado -->
+    <div v-else class="mensaje-bienvenida">
+      <h2>Welcome to Weather Today!</h2>
+      <p>Search for a city to start</p>
+    </div>
+    
+    <footer class="footer">
+      <a href="https://open-meteo.com/" target="blank" class="link-datos">Data provided by Open-Meteo</a>
+    </footer>
+  </main>
 </template>
 
 <script setup>
@@ -30,3 +37,35 @@ function actualizarLugar(lugar) {
   lugarSeleccionado.value = lugar;
 }
 </script>
+
+<style scoped>
+.mensaje-bienvenida {
+  text-align: center;
+  margin-top: 100px;
+  color: var(--texto-gris);
+}
+
+.mensaje-bienvenida h2 {
+  font-size: 2rem;
+  color: var(--texto-oscuro);
+  margin-bottom: 10px;
+}
+
+.footer {
+  margin-top: 60px;
+  text-align: center;
+  padding: 20px;
+}
+
+.link-datos {
+  text-decoration: none;
+  color: var(--texto-gris);
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.link-datos:hover {
+  color: var(--azul-primario);
+}
+</style>
