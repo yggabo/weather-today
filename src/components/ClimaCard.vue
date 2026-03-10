@@ -69,7 +69,7 @@ const clima = ref(null);
 
 // Función para obtener clima actual
 async function obtenerClima(lat, lon) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relativehumidity_2m,precipitation,precipitation_probability,windspeed_10m&temperature_unit=celsius&windspeed_unit=kmh&precipitation_unit=mm`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,precipitation,precipitation_probability,windspeed_10m&temperature_unit=celsius&windspeed_unit=kmh&precipitation_unit=mm`;
 
   const res = await fetch(url);
   const datos = await res.json();
@@ -79,7 +79,7 @@ async function obtenerClima(lat, lon) {
     precipitacion: datos.current.precipitation,
     probabilidad: datos.current.precipitation_probability,
     viento: datos.current.windspeed_10m,
-    humedad: datos.current.relativehumidity_2m
+    humedad: datos.current.relative_humidity_2m,
   };
 }
 

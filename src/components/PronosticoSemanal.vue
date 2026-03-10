@@ -14,9 +14,9 @@
         :class="{ 'item-activo': index === 0 }"
       >
         <span class="dia-nombre">{{ index === 0 ? 'NOW' : formatearDia(dia.fecha) }}</span>
+        
         <div class="icono-clima-pequeno">
-          <!-- Icono de sol/clima simplificado -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" :stroke="index === 0 ? '#fff' : '#007bff'" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          {{ obtenerIcono(dia.weathercode) }}
         </div>
         <span class="dia-temp">{{ Math.round(dia.tempMax) }}°</span>
       </div>
@@ -39,7 +39,7 @@ const pronostico = ref([]);
 
 // Función para obtener pronóstico
 async function obtenerPronostico(lat, lon) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&temperature_unit=celsius&precipitation_unit=mm&timezone=auto&forecast_days=7`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_sum&temperature_unit=celsius&precipitation_unit=mm&timezone=auto&forecast_days=7`;
   const res = await fetch(url);
   const datos = await res.json();
 
@@ -47,10 +47,23 @@ async function obtenerPronostico(lat, lon) {
     fecha,
     tempMax: datos.daily.temperature_2m_max[i],
     tempMin: datos.daily.temperature_2m_min[i],
-    precipitacion: datos.daily.precipitation_sum[i] ?? 0
+    precipitacion: datos.daily.precipitation_sum[i] ?? 0,
+    weathercode: datos.daily.weathercode[i]
   }));
 
   pronostico.value = dias;
+}
+
+function obtenerIcono(weathercode) {
+  if (weathercode === 0) return '☀️';
+  if ([1,2].includes(weathercode)) return '🌤️';
+  if (weathercode === 3) return '☁️';
+  if ([45,48].includes(weathercode)) return '🌫️';
+  if ([51,53,55,61,63,65,80,81,82].includes(weathercode)) return '🌧️';
+  if ([71,73,75,77].includes(weathercode)) return '❄️';
+  if ([95,96,99].includes(weathercode)) return '⛈️';
+
+  return '☀️';
 }
 
 // Función para formatear la fecha
