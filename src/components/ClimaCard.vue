@@ -10,15 +10,16 @@
           <span class="numero-temperatura">{{ Math.round(clima.temperatura) }}</span>
           <span class="unidad-celcius">°C</span>
         </div>
-        <div class="icono-clima-grande">
-          <!-- Icono de sol simplificado -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#ffcc00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-        </div>
+     <div class="icono-clima-grande">
+  <span style="font-size: 5rem">{{ getWeatherDisplay(clima.weathercode).icon }}</span>
+</div>
+
+
       </div>
       
-      <div class="estado-clima-badge">
-        <span>MAINLY SUNNY</span>
-      </div>
+     <div class="estado-clima-badge" >
+  <span>{{ getWeatherDisplay(clima.weathercode).texto }}</span>
+</div>
 
       <div class="estadisticas-grid">
         <div class="stat-item">
@@ -42,16 +43,13 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue';
+import { ref, watch } from 'vue';
 import { defineProps } from 'vue';
 
-// Props recibidos desde el componente padre
-// Se espera un objeto 'lugar' con latitud y longitud
 const props = defineProps({
   lugar: Object
 });
 
-// Función para obtener la fecha y hora actual formateada
 function obtenerFechaFormateada() {
   const ahora = new Date();
   return ahora.toLocaleDateString('en-US', { 
@@ -64,26 +62,51 @@ function obtenerFechaFormateada() {
   }).replace(',', '');
 }
 
-// Variable reactiva que almacenará los datos del clima actual
 const clima = ref(null);
 
-// Función para obtener clima actual
 async function obtenerClima(lat, lon) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,precipitation,precipitation_probability,windspeed_10m&temperature_unit=celsius&windspeed_unit=kmh&precipitation_unit=mm`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&current=temperature_2m,relative_humidity_2m,precipitation,precipitation_probability,windspeed_10m,weathercode&temperature_unit=celsius&windspeed_unit=kmh&precipitation_unit=mm`;
 
   const res = await fetch(url);
   const datos = await res.json();
 
   return {
-    temperatura: datos.current.temperature_2m,
-    precipitacion: datos.current.precipitation,
-    probabilidad: datos.current.precipitation_probability,
-    viento: datos.current.windspeed_10m,
-    humedad: datos.current.relative_humidity_2m,
+    temperatura: datos.current_weather.temperature,
+    precipitacion: datos.current_weather.precipitation,
+    probabilidad: datos.current_weather.precipitation_probability,
+    viento: datos.current_weather.windspeed,
+    humedad: datos.current_weather.relative_humidity_2m, // si tu API devuelve humedad aquí
+    weathercode: datos.current_weather.weathercode // nuevo campo
   };
 }
 
-// Watcher para props.lugar
+const weatherMap = {
+  0: { texto: 'CLEAR SKY', color: '#ffcc00', icon: '☀️' },
+  1: { texto: 'MAINLY CLEAR', color: '#ffe066', icon: '🌤️' },
+  2: { texto: 'PARTLY CLOUDY', color: '#d9d9d9', icon: '⛅' },
+  3: { texto: 'OVERCAST', color: '#a0a0a0', icon: '☁️' },
+  45: { texto: 'FOG', color: '#cfcfcf', icon: '🌫️' },
+  48: { texto: 'RIME FOG', color: '#d0d0d0', icon: '🌫️' },
+  51: { texto: 'DRIZZLE LIGHT', color: '#a0c4ff', icon: '🌦️' },
+  53: { texto: 'DRIZZLE MODERATE', color: '#70a1ff', icon: '🌦️' },
+  55: { texto: 'DRIZZLE DENSE', color: '#3366ff', icon: '🌧️' },
+  61: { texto: 'RAIN SLIGHT', color: '#3399ff', icon: '🌧️' },
+  63: { texto: 'RAIN MODERATE', color: '#0066ff', icon: '🌧️' },
+  65: { texto: 'RAIN HEAVY', color: '#0033cc', icon: '🌧️' },
+  71: { texto: 'SNOW SLIGHT', color: '#e6f7ff', icon: '🌨️' },
+  73: { texto: 'SNOW MODERATE', color: '#b3e5fc', icon: '🌨️' },
+  75: { texto: 'SNOW HEAVY', color: '#80d4ff', icon: '❄️' },
+  80: { texto: 'SHOWERS SLIGHT', color: '#66ccff', icon: '🌦️' },
+  81: { texto: 'SHOWERS MODERATE', color: '#3399ff', icon: '🌦️' },
+  82: { texto: 'SHOWERS HEAVY', color: '#0066cc', icon: '🌧️' },
+  95: { texto: 'THUNDERSTORM', color: '#ff9900', icon: '⛈️' },
+  99: { texto: 'THUNDERSTORM HAIL', color: '#cc6600', icon: '⛈️' },
+};
+
+function getWeatherDisplay(code) {
+  return weatherMap[code] || { texto: 'UNKNOWN', color: '#999999', icon: '❔' };
+}
+
 watch(
   () => props.lugar,
   async (nuevoLugar) => {
