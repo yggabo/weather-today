@@ -1,8 +1,8 @@
-# Weather Today! 🌦️
+# Weather Today! 
 
 Una aplicación web moderna y elegante para consultar el clima en tiempo real de cualquier ciudad del mundo.
 
-## 🚀 Características
+## Características
 
 - **Búsqueda Inteligente**: Autocompletado de ciudades utilizando la API de Geocodificación de Open-Meteo.
 - **Clima Actual Detallado**: Visualización premium de la temperatura, probabilidad de precipitación, velocidad del viento y humedad.
@@ -10,14 +10,14 @@ Una aplicación web moderna y elegante para consultar el clima en tiempo real de
 - **Interfaz Premium**: Diseño inspirado en interfaces modernas, con tipografía cuidada (Inter), sombras suaves y una paleta de colores equilibrada.
 - **Componentización**: Arquitectura basada en componentes de Vue 3 (SFC) para una mejor organización y mantenibilidad.
 
-## 🛠️ Tecnologías
+## Tecnologías
 
 - **Vue 3**: Framework progresivo de JavaScript.
 - **Vite**: Herramienta de compilación rápida para el desarrollo.
 - **CSS Vanilla**: Estilos personalizados sin dependencias externas pesadas.
 - **Open-Meteo API**: Datos meteorológicos gratuitos y precisos sin necesidad de clave API.
 
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 - `src/App.vue`: Contenedor principal y gestión del estado de la ubicación.
 - `src/components/UbicacionInput.vue`: Componente de búsqueda y autocompletado.
@@ -25,7 +25,7 @@ Una aplicación web moderna y elegante para consultar el clima en tiempo real de
 - `src/components/PronosticoSemanal.vue`: Listado del pronóstico para la semana.
 - `src/assets/main.css`: Sistema de diseño global y variables.
 
-## 💻 Instalación y Ejecución
+## Instalación y Ejecución
 
 1. Instalar dependencias:
    ```bash
